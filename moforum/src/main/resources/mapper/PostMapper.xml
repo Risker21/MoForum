@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moforum.mapper.PostMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_post (user_id, board_id, title, content, view_count, reply_count, create_time, update_time)
+        VALUES (#{userId}, #{boardId}, #{title}, #{content}, #{viewCount}, #{replyCount}, NOW(), NOW())
+    </insert>
+
+    <select id="selectPageByBoard" resultType="com.moforum.entity.Post">
+        SELECT p.id,
+               p.user_id AS userId,
+               p.board_id AS boardId,
+               p.title,
+               p.content,
+               p.view_count AS viewCount,
+               p.reply_count AS replyCount,
+               p.create_time AS createTime,
+               p.update_time AS updateTime,
+               u.username AS authorName
+        FROM t_post p
+                 LEFT JOIN t_user u ON u.id = p.user_id
+        WHERE p.board_id = #{boardId}
+        ORDER BY p.create_time DESC, p.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByBoard" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_post WHERE board_id = #{boardId}
+    </select>
+
+    <select id="selectLatest" resultType="com.moforum.entity.Post">
+        SELECT p.id,
+               p.user_id AS userId,
+               p.board_id AS boardId,
+               p.title,
+               LEFT(p.content, 180) AS content,
+               p.view_count AS viewCount,
+               p.reply_count AS replyCount,
+               p.create_time AS createTime,
+               p.update_time AS updateTime,
+               u.username AS authorName,
+               b.name AS boardName
+        FROM t_post p
+                 LEFT JOIN t_user u ON u.id = p.user_id
+                 LEFT JOIN t_board b ON b.id = p.board_id
+        ORDER BY p.create_time DESC, p.id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectByIdWithAuthor" resultType="com.moforum.entity.Post">
+        SELECT p.id,
+               p.user_id AS userId,
+               p.board_id AS boardId,
+               p.title,
+               p.content,
+               p.view_count AS viewCount,
+               p.reply_count AS replyCount,
+               p.create_time AS createTime,
+               p.update_time AS updateTime,
+               u.username AS authorName,
+               b.name AS boardName
+        FROM t_post p
+                 LEFT JOIN t_user u ON u.id = p.user_id
+                 LEFT JOIN t_board b ON b.id = p.board_id
+        WHERE p.id = #{id}
+    </select>
+
+    <update id="incrementViewCount">
+        UPDATE t_post SET view_count = view_count + 1 WHERE id = #{id}
+    </update>
+
+    <update id="incrementReplyCount">
+        UPDATE t_post SET reply_count = reply_count + 1, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <select id="selectBasicById" resultType="com.moforum.entity.Post">
+        SELECT id, user_id AS userId, board_id AS boardId
+        FROM t_post
+        WHERE id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM t_post WHERE id = #{id}
+    </delete>
+
+    <select id="searchByKeyword" resultType="com.moforum.entity.Post">
+        SELECT p.id,
+               p.user_id AS userId,
+               p.board_id AS boardId,
+               p.title,
+               LEFT(p.content, 180) AS content,
+               p.view_count AS viewCount,
+               p.reply_count AS replyCount,
+               p.create_time AS createTime,
+               p.update_time AS updateTime,
+               u.username AS authorName,
+               b.name AS boardName
+        FROM t_post p
+                 LEFT JOIN t_user u ON p.user_id = u.id
+                 LEFT JOIN t_board b ON p.board_id = b.id
+        WHERE p.title LIKE #{keyword} OR p.content LIKE #{keyword}
+        ORDER BY p.create_time DESC LIMIT #{limit}
+    </select>
+
+    <select id="selectByUserId" resultType="com.moforum.entity.Post">
+        SELECT p.id,
+               p.user_id AS userId,
+               p.board_id AS boardId,
+               p.title,
+               LEFT(p.content, 180) AS content,
+               p.view_count AS viewCount,
+               p.reply_count AS replyCount,
+               p.create_time AS createTime,
+               p.update_time AS updateTime,
+               u.username AS authorName,
+               b.name AS boardName
+        FROM t_post p
+                 LEFT JOIN t_user u ON p.user_id = u.id
+                 LEFT JOIN t_board b ON p.board_id = b.id
+        WHERE p.user_id = #{userId}
+        ORDER BY p.create_time DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM t_post WHERE user_id = #{userId}
+    </select>
+</mapper>

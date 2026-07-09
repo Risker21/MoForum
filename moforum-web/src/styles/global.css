@@ -1,0 +1,101 @@
+:root {
+  --mf-primary: #b52b2b;
+  --mf-primary-soft: #fef2f2;
+  --mf-primary-dark: #8a1f1f;
+  --mf-bg: #f5f1ec;
+  --mf-paper: #ffffff;
+  --mf-text: #1c1917;
+  --mf-muted: #78716c;
+  --mf-border: #e7e2dc;
+  --mf-header-h: 60px;
+
+  --el-color-primary: #b52b2b;
+  --el-color-primary-light-3: #c94f4f;
+  --el-color-primary-light-5: #df7a7a;
+  --el-color-primary-light-7: #eba6a6;
+  --el-color-primary-light-8: #f5c6c6;
+  --el-color-primary-light-9: #fef2f2;
+  --el-color-primary-dark-2: #8a1f1f;
+  --el-border-radius-base: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  background: var(--mf-bg);
+  color: var(--mf-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@keyframes mf-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mf-fade-in {
+  animation: mf-fade-in 0.4s ease both;
+}
+
+.mf-fade-in-d1 { animation-delay: 0.05s; }
+.mf-fade-in-d2 { animation-delay: 0.10s; }
+.mf-fade-in-d3 { animation-delay: 0.15s; }
+.mf-fade-in-d4 { animation-delay: 0.20s; }
+.mf-fade-in-d5 { animation-delay: 0.25s; }
+.mf-fade-in-d6 { animation-delay: 0.30s; }
+
+.mf-page-title {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--mf-text);
+}
+
+.mf-page-sub {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  color: var(--mf-muted);
+}
+
+.mf-link {
+  color: var(--mf-primary);
+  font-weight: 600;
+}
+
+.mf-link:hover {
+  text-decoration: underline;
+}
+
+.mf-card {
+  background: var(--mf-paper);
+  border: 1px solid var(--mf-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.mf-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.el-button.is-round {
+  --el-border-radius-base: 24px;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moforum.mapper.FriendMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_friend (user_id_1, user_id_2) VALUES (#{userId1}, #{userId2})
+    </insert>
+    <select id="selectByUsers" resultType="com.moforum.entity.Friend">
+        SELECT * FROM t_friend WHERE user_id_1 = #{userId1} AND user_id_2 = #{userId2}
+    </select>
+    <select id="selectFriends" resultType="com.moforum.entity.Friend">
+        SELECT * FROM t_friend WHERE user_id_1 = #{userId} OR user_id_2 = #{userId} ORDER BY create_time DESC
+    </select>
+    <select id="selectFriendIds" resultType="long">
+        SELECT CASE WHEN user_id_1 = #{userId} THEN user_id_2 ELSE user_id_1 END
+        FROM t_friend WHERE user_id_1 = #{userId} OR user_id_2 = #{userId}
+    </select>
+    <select id="checkFriendship" resultType="int">
+        SELECT COUNT(*) FROM t_friend WHERE (user_id_1 = #{userId1} AND user_id_2 = #{userId2})
+            OR (user_id_1 = #{userId2} AND user_id_2 = #{userId1})
+    </select>
+</mapper>

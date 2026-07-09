@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moforum.mapper.MessageMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_message (from_id, to_id, content) VALUES (#{fromId}, #{toId}, #{content})
+    </insert>
+    <select id="selectConversation" resultType="com.moforum.entity.Message">
+        SELECT * FROM t_message WHERE (from_id = #{userId1} AND to_id = #{userId2})
+            OR (from_id = #{userId2} AND to_id = #{userId1})
+        ORDER BY create_time DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="countConversation" resultType="int">
+        SELECT COUNT(*) FROM t_message WHERE (from_id = #{userId1} AND to_id = #{userId2})
+            OR (from_id = #{userId2} AND to_id = #{userId1})
+    </select>
+    <update id="markRead">
+        UPDATE t_message SET `read` = 1 WHERE to_id = #{toUserId} AND from_id = #{fromUserId} AND `read` = 0
+    </update>
+    <select id="countUnread" resultType="int">
+        SELECT COUNT(*) FROM t_message WHERE to_id = #{userId} AND `read` = 0
+    </select>
+    <select id="selectConversations" resultType="com.moforum.entity.Message">
+        SELECT m.* FROM t_message m
+        INNER JOIN (
+            SELECT LEAST(from_id, to_id) AS u1, GREATEST(from_id, to_id) AS u2, MAX(create_time) AS max_time
+            FROM t_message WHERE from_id = #{userId} OR to_id = #{userId}
+            GROUP BY u1, u2
+        ) latest ON ((m.from_id = latest.u1 AND m.to_id = latest.u2)
+                  OR (m.from_id = latest.u2 AND m.to_id = latest.u1))
+                 AND m.create_time = latest.max_time
+        ORDER BY m.create_time DESC
+    </select>
+</mapper>

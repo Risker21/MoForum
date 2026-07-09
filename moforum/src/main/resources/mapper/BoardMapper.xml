@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moforum.mapper.BoardMapper">
+
+    <select id="listAll" resultType="com.moforum.entity.Board">
+        SELECT id, name, description, avatar, sort_order AS sortOrder, post_count AS postCount,
+               create_time AS createTime, update_time AS updateTime
+        FROM t_board
+        ORDER BY sort_order ASC, id ASC
+    </select>
+
+    <select id="selectById" resultType="com.moforum.entity.Board">
+        SELECT id, name, description, avatar, sort_order AS sortOrder, post_count AS postCount,
+               create_time AS createTime, update_time AS updateTime
+        FROM t_board
+        WHERE id = #{id}
+    </select>
+
+    <update id="incrementPostCount">
+        UPDATE t_board SET post_count = post_count + 1 WHERE id = #{id}
+    </update>
+
+    <update id="decrementPostCount">
+        UPDATE t_board SET post_count = GREATEST(post_count - 1, 0) WHERE id = #{id}
+    </update>
+
+    <select id="searchByKeyword" resultType="com.moforum.entity.Board">
+        SELECT * FROM t_board WHERE name LIKE #{keyword} OR description LIKE #{keyword}
+        ORDER BY sort_order ASC LIMIT #{limit}
+    </select>
+</mapper>

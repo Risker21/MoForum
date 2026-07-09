@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moforum.mapper.FriendRequestMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_friend_request (from_id, to_id, status) VALUES (#{fromId}, #{toId}, 0)
+    </insert>
+    <update id="updateStatus">
+        UPDATE t_friend_request SET status = #{status} WHERE id = #{id}
+    </update>
+    <select id="selectById" resultType="com.moforum.entity.FriendRequest">
+        SELECT * FROM t_friend_request WHERE id = #{id}
+    </select>
+    <select id="selectByUsers" resultType="com.moforum.entity.FriendRequest">
+        SELECT * FROM t_friend_request WHERE from_id = #{fromId} AND to_id = #{toId}
+    </select>
+    <select id="selectReceived" resultType="com.moforum.entity.FriendRequest">
+        SELECT * FROM t_friend_request WHERE to_id = #{userId} AND status = 0 ORDER BY create_time DESC
+    </select>
+    <select id="selectSent" resultType="com.moforum.entity.FriendRequest">
+        SELECT * FROM t_friend_request WHERE from_id = #{userId} ORDER BY create_time DESC
+    </select>
+    <select id="countPendingReceived" resultType="int">
+        SELECT COUNT(*) FROM t_friend_request WHERE to_id = #{userId} AND status = 0
+    </select>
+</mapper>
