@@ -6,7 +6,7 @@
 ![Element Plus](https://img.shields.io/badge/Element_Plus-2.9-409EFF?logo=element)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-25A3F0)
 ![ECharts](https://img.shields.io/badge/ECharts-5.6-FB7299)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+![License](https://img.shields.io/badge/License-GPLv3-blue)
 
 **MoForum** 是一个基于 Spring Boot + Vue 3 的全栈论坛社区项目，采用"贴吧"模式。支持按主题分区浏览、发帖盖楼回复、Mo 号身份系统、关注好友、实时私聊等核心功能。前端采用 **"Ink & Paper"** 暖色主题设计（`#b52b2b` 朱红主色），追求精致阅读体验。
 
