@@ -1,6 +1,7 @@
 # ============ 环境配置（含密钥，严禁提交） ============
 .env
 docker/.env
+docker/application.properties
 
 # ============ 编译产物 ============
 target/
