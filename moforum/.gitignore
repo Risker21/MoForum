@@ -8,6 +8,9 @@ target/
 *.jar
 *.log
 
+# ============ 前端编译产物（由 build-frontend.sh 生成） ============
+docker/frontend/
+
 # ============ IDE 配置 ============
 .idea/
 *.iml

@@ -41,7 +41,7 @@ services:
     networks:
       - moforum-net
 
-  # ==================== Spring Boot 应用 ====================
+  # ==================== Spring Boot 后端 ====================
   app:
     build:
       context: .
@@ -60,7 +60,7 @@ services:
     networks:
       - moforum-net
 
-  # ==================== Nginx 反向代理 ====================
+  # ==================== Nginx 统一入口（前端 + 后端代理） ====================
   nginx:
     image: nginx:alpine
     container_name: moforum-nginx
@@ -69,6 +69,7 @@ services:
       - app
     volumes:
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/frontend:/usr/share/nginx/html:ro  # 前端静态文件
     ports:
       - "80:80"
     networks:
