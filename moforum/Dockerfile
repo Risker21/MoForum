@@ -26,9 +26,9 @@ RUN mkdir -p /app/config && chown -R appuser:appgroup /app
 USER appuser
 EXPOSE 8080
 
-# 启动命令
+# 启动命令（加载外部配置目录）
 ENTRYPOINT ["java", \
   "-XX:+UseG1GC", \
   "-XX:MaxRAMPercentage=75.0", \
   "-jar", "/app/app.jar", \
-  "--spring.config.import=optional:file:/app/config/.env[.properties]"]
+  "--spring.config.additional-location=file:/app/config/"]

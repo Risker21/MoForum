@@ -56,7 +56,7 @@ services:
     environment:
       - TZ=Asia/Shanghai
     volumes:
-      - ./docker/.env:/app/config/.env:ro
+      - ./docker/application.properties:/app/config/application.properties:ro
     networks:
       - moforum-net
 
