@@ -3,7 +3,7 @@ import axios from 'axios'
 const TOKEN_KEY = 'moforum_token'
 
 export const http = axios.create({
-  baseURL: '',
+  baseURL: '/api',
   timeout: 15000,
 })
 

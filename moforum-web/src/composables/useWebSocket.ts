@@ -14,8 +14,9 @@ export function useWebSocket() {
   function connect(token: string) {
     if (client?.active) return
 
+    const wsUrl = `${window.location.origin}/api/ws`
     client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS(wsUrl),
       connectHeaders: {
         token: token,
       },
