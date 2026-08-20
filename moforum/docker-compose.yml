@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # ==================== MySQL 数据库 ====================
+  mysql:
+    image: mysql:8.0
+    container_name: moforum-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: moforum
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - moforum-net
+
+  # ==================== Redis 缓存 ====================
+  redis:
+    image: redis:7-alpine
+    container_name: moforum-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - moforum-net
+
+  # ==================== Spring Boot 应用 ====================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moforum-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./docker/.env:/app/config/.env:ro
+    networks:
+      - moforum-net
+
+  # ==================== Nginx 反向代理 ====================
+  nginx:
+    image: nginx:alpine
+    container_name: moforum-nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      - moforum-net
+
+# 数据持久化卷
+volumes:
+  mysql_data:
+  redis_data:
+
+# 网络
+networks:
+  moforum-net:

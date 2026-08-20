@@ -1,0 +1,11 @@
+target
+.git
+.idea
+*.iml
+.vscode
+.env
+.env.example
+docker/.env
+*.log
+.DS_Store
+Thumbs.db
