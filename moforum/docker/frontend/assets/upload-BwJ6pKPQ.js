@@ -1,0 +1,1 @@
+import{h as t}from"./http-BYT4yIeK.js";function r(o){const a=new FormData;return a.append("file",o),t.post("/upload/image",a)}function p(o){return t.post("/upload/confirm",{url:o})}export{p as c,r as u};
