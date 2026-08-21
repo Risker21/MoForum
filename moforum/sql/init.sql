@@ -2,6 +2,9 @@
 -- 用法：mysql -u root -p < init.sql
 -- 注意：用户、帖子、回复等示例数据由后端 DataInitializer 在首次启动时自动生成
 
+-- 关键：强制客户端以 utf8mb4 解析本脚本，否则中文/emoji 会被当作 latin1 存成乱码
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS `moforum` DEFAULT CHARACTER SET utf8mb4;
 USE `moforum`;
 
