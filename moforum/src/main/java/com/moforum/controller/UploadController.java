@@ -1,9 +1,8 @@
 package com.moforum.controller;
 
 import com.moforum.config.UserPrincipal;
-import com.moforum.service.OssService;
+import com.moforum.service.LocalStorageService;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +19,11 @@ public class UploadController {
 
     private static final long MAX_SIZE = 3 * 1024 * 1024;
 
-    private final OssService ossService;
+    private final LocalStorageService storageService;
     private final StringRedisTemplate redis;
 
-    public UploadController(OssService ossService, StringRedisTemplate redis) {
-        this.ossService = ossService;
+    public UploadController(LocalStorageService storageService, StringRedisTemplate redis) {
+        this.storageService = storageService;
         this.redis = redis;
     }
 
@@ -45,12 +44,9 @@ public class UploadController {
         if (contentType == null || !contentType.startsWith("image/")) {
             return Map.of("success", false, "message", "仅支持图片格式");
         }
-        if (!ossService.isEnabled()) {
-            return Map.of("success", false, "message", "OSS 未配置，无法上传");
-        }
         try {
-            String url = ossService.upload(file);
-            String key = ossService.extractKey(url);
+            String url = storageService.upload(file);
+            String key = storageService.extractKey(url);
             if (key != null) {
                 redis.opsForSet().add("img:pending", key);
                 redis.opsForHash().put("img:pending:meta", key, String.valueOf(System.currentTimeMillis()));
@@ -71,7 +67,7 @@ public class UploadController {
         if (url == null || url.isEmpty()) {
             return Map.of("success", false, "message", "参数缺失");
         }
-        String key = ossService.extractKey(url);
+        String key = storageService.extractKey(url);
         if (key != null) {
             redis.opsForSet().add("img:confirmed", key);
             redis.opsForSet().remove("img:pending", key);
