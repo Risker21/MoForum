@@ -13,4 +13,6 @@ public class Reply {
     private LocalDateTime createTime;
     /** 联表查询：作者昵称 */
     private String authorName;
+    /** 联表查询：作者头像 */
+    private String avatarUrl;
 }

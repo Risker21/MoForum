@@ -19,7 +19,8 @@
                p.reply_count AS replyCount,
                p.create_time AS createTime,
                p.update_time AS updateTime,
-               u.username AS authorName
+               u.username AS authorName,
+               u.avatar_url AS avatarUrl
         FROM t_post p
                  LEFT JOIN t_user u ON u.id = p.user_id
         WHERE p.board_id = #{boardId}
@@ -42,6 +43,7 @@
                p.create_time AS createTime,
                p.update_time AS updateTime,
                u.username AS authorName,
+               u.avatar_url AS avatarUrl,
                b.name AS boardName
         FROM t_post p
                  LEFT JOIN t_user u ON u.id = p.user_id
@@ -61,6 +63,7 @@
                p.create_time AS createTime,
                p.update_time AS updateTime,
                u.username AS authorName,
+               u.avatar_url AS avatarUrl,
                b.name AS boardName
         FROM t_post p
                  LEFT JOIN t_user u ON u.id = p.user_id
@@ -97,6 +100,7 @@
                p.create_time AS createTime,
                p.update_time AS updateTime,
                u.username AS authorName,
+               u.avatar_url AS avatarUrl,
                b.name AS boardName
         FROM t_post p
                  LEFT JOIN t_user u ON p.user_id = u.id
@@ -116,6 +120,7 @@
                p.create_time AS createTime,
                p.update_time AS updateTime,
                u.username AS authorName,
+               u.avatar_url AS avatarUrl,
                b.name AS boardName
         FROM t_post p
                  LEFT JOIN t_user u ON p.user_id = u.id

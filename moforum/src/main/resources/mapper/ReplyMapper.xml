@@ -15,7 +15,8 @@
                r.user_id AS userId,
                r.content,
                r.create_time AS createTime,
-               u.username AS authorName
+               u.username AS authorName,
+               u.avatar_url AS avatarUrl
         FROM t_reply r
                  JOIN t_user u ON u.id = r.user_id
         WHERE r.post_id = #{postId}

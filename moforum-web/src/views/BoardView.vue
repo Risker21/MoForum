@@ -116,7 +116,11 @@ function newPost() {
             <span class="post-snippet">{{ p.content }}</span>
           </div>
           <div class="post-meta">
-            <span class="link" @click.stop="goUser(p.userId)">{{ p.authorName || '匿名' }}</span>
+            <span class="link author" @click.stop="goUser(p.userId)">
+              <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '匿').slice(0, 1) }}</el-avatar>
+              <el-avatar v-else :size="20" :src="p.avatarUrl" class="mini-av-img" />
+              {{ p.authorName || '匿名' }}
+            </span>
             <span>{{ p.replyCount ?? 0 }} 回复</span>
             <span>{{ p.viewCount ?? 0 }} 浏览</span>
             <span v-if="p.createTime" class="time">{{ p.createTime }}</span>
@@ -246,6 +250,9 @@ function newPost() {
 
 .link { cursor: pointer; color: #5d4037; font-weight: 600; }
 .link:hover { color: var(--mf-primary); }
+.author { display: inline-flex; align-items: center; gap: 6px; }
+.mini-av { background: linear-gradient(135deg, #b52b2b, #c0392b); color: #fff; font-size: 11px; flex-shrink: 0; }
+.mini-av-img { flex-shrink: 0; }
 
 .pager {
   margin-top: 20px;

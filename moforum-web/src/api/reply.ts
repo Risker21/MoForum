@@ -7,6 +7,7 @@ export type ReplyRow = {
   content: string
   createTime?: string
   authorName?: string
+  avatarUrl?: string
 }
 
 export type CreateReplyRes = { success: boolean; message: string }

@@ -81,7 +81,11 @@ function truncate(text: string, max = 150) {
                 <div class="post-snippet">{{ truncate(p.content) }}</div>
                 <div class="post-meta">
                   <el-tag v-if="p.boardName" size="small" type="danger" effect="light">{{ p.boardName }}</el-tag>
-                  <span class="author">{{ p.authorName || '匿名' }}</span>
+                  <span class="author">
+                    <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '匿').slice(0, 1) }}</el-avatar>
+                    <el-avatar v-else :size="20" :src="p.avatarUrl" class="mini-av-img" />
+                    {{ p.authorName || '匿名' }}
+                  </span>
                   <span v-if="p.createTime" class="time">{{ p.createTime }}</span>
                 </div>
               </div>
@@ -195,8 +199,22 @@ function truncate(text: string, max = 150) {
 }
 
 .author {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 600;
   color: #5d4037;
+}
+
+.mini-av {
+  background: linear-gradient(135deg, #b52b2b, #c0392b);
+  color: #fff;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.mini-av-img {
+  flex-shrink: 0;
 }
 
 .board-card {

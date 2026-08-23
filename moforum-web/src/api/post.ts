@@ -11,6 +11,7 @@ export type PostRow = {
   createTime?: string
   updateTime?: string
   authorName?: string
+  avatarUrl?: string
   boardName?: string
 }
 

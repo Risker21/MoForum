@@ -21,6 +21,8 @@ public class Post {
     private LocalDateTime updateTime;
     /** 联表查询：楼主昵称 */
     private String authorName;
+    /** 联表查询：楼主头像 */
+    private String avatarUrl;
     /** 联表查询：吧名 */
     private String boardName;
 }
