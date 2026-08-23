@@ -105,7 +105,7 @@ public class LocalStorageService {
 
 ### 权限处理
 
-- app 容器以非 root 用户 `appuser`（uid ≈ 100）运行；nginx 以 `nginx` 用户（uid 101）运行。
+- app 容器以非 root 用户 `appuser`（uid 100，alpine `adduser -S` 的首个系统用户）运行；nginx 以 `nginx` 用户（uid 101）运行。
 - app 写入的文件默认 644、目录 755，nginx 只需读权限，天然可读。
 - 唯一需要处理的是宿主机 `uploads` 目录的初始属主：部署时执行一次 `mkdir -p uploads && chown 100:100 uploads`，使 appuser（uid 100）能写入，nginx（uid 101）以「其他用户」读权限读取。
 
