@@ -8,6 +8,9 @@
     <update id="updateStatus">
         UPDATE t_friend_request SET status = #{status} WHERE id = #{id}
     </update>
+    <delete id="deleteByUser">
+        DELETE FROM t_friend_request WHERE from_id = #{userId} OR to_id = #{userId}
+    </delete>
     <select id="selectById" resultType="com.moforum.entity.FriendRequest">
         SELECT * FROM t_friend_request WHERE id = #{id}
     </select>

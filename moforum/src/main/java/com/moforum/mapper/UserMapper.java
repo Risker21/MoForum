@@ -38,5 +38,9 @@ public interface UserMapper {
 
     int updateProfile(@Param("id") Long id, @Param("bio") String bio, @Param("avatarUrl") String avatarUrl);
 
+    int updatePassword(@Param("id") Long id, @Param("password") String password);
+
+    int deleteById(@Param("id") Long id);
+
     List<User> searchByKeyword(@Param("keyword") String keyword, @Param("limit") int limit);
 }

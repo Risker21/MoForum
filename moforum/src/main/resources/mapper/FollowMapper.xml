@@ -8,6 +8,9 @@
     <delete id="delete">
         DELETE FROM t_follow WHERE follower_id = #{followerId} AND followed_id = #{followedId}
     </delete>
+    <delete id="deleteByUser">
+        DELETE FROM t_follow WHERE follower_id = #{userId} OR followed_id = #{userId}
+    </delete>
     <select id="selectByFollowerAndFollowed" resultType="com.moforum.entity.Follow">
         SELECT * FROM t_follow WHERE follower_id = #{followerId} AND followed_id = #{followedId}
     </select>

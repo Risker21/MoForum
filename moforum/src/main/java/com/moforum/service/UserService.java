@@ -2,6 +2,10 @@ package com.moforum.service;
 
 import com.moforum.config.JwtUtils;
 import com.moforum.entity.User;
+import com.moforum.mapper.FollowMapper;
+import com.moforum.mapper.FriendMapper;
+import com.moforum.mapper.FriendRequestMapper;
+import com.moforum.mapper.MessageMapper;
 import com.moforum.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +31,21 @@ public class UserService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private FollowMapper followMapper;
+
+    @Autowired
+    private FriendMapper friendMapper;
+
+    @Autowired
+    private FriendRequestMapper friendRequestMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
+
+    @Autowired
+    private LocalStorageService localStorageService;
 
     /**
      * Mo 号 = 10 亿 + 主键，与 QQ 类似为固定长度数字身份，便于记忆与检索
@@ -97,5 +116,41 @@ public class UserService {
 
     public User getUserByUserNo(Long userNo) {
         return userMapper.selectByUserNo(userNo);
+    }
+
+    public Map<String, Object> changePassword(Long userId, String oldPassword, String newPassword) {
+        if (newPassword == null || newPassword.length() < 6) {
+            return Map.of("success", false, "message", "新密码长度至少 6 位");
+        }
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return Map.of("success", false, "message", "用户不存在");
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            return Map.of("success", false, "message", "原密码错误");
+        }
+        userMapper.updatePassword(userId, passwordEncoder.encode(newPassword));
+        return Map.of("success", true, "message", "密码已修改");
+    }
+
+    /**
+     * 注销账号：删除账号及好友/关注/私信等关系数据；
+     * 帖子与回复保留，作者匿名显示（LEFT JOIN 后 authorName 为 null，前端展示“已注销”）。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> deleteAccount(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return Map.of("success", false, "message", "用户不存在");
+        }
+        followMapper.deleteByUser(userId);
+        friendMapper.deleteByUser(userId);
+        friendRequestMapper.deleteByUser(userId);
+        messageMapper.deleteByUser(userId);
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isBlank()) {
+            localStorageService.delete(user.getAvatarUrl());
+        }
+        userMapper.deleteById(userId);
+        return Map.of("success", true, "message", "账号已注销");
     }
 }

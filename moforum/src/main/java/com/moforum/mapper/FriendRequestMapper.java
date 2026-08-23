@@ -12,6 +12,7 @@ import java.util.List;
 public interface FriendRequestMapper {
     int insert(FriendRequest request);
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+    int deleteByUser(@Param("userId") Long userId);
     FriendRequest selectById(@Param("id") Long id);
     FriendRequest selectByUsers(@Param("fromId") Long fromId, @Param("toId") Long toId);
     List<FriendRequest> selectReceived(@Param("userId") Long userId);

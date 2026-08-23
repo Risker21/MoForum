@@ -54,6 +54,25 @@ public class UserController {
         return Map.of("success", true, "message", "已更新");
     }
 
+    @PostMapping("/changePassword")
+    public Map<String, Object> changePassword(@RequestBody Map<String, String> body,
+                                              @AuthenticationPrincipal UserPrincipal principal) {
+        if (principal == null) {
+            return Map.of("success", false, "message", "请先登录");
+        }
+        String oldPassword = body.getOrDefault("oldPassword", "");
+        String newPassword = body.getOrDefault("newPassword", "");
+        return userService.changePassword(principal.userId(), oldPassword, newPassword);
+    }
+
+    @PostMapping("/delete")
+    public Map<String, Object> deleteAccount(@AuthenticationPrincipal UserPrincipal principal) {
+        if (principal == null) {
+            return Map.of("success", false, "message", "请先登录");
+        }
+        return userService.deleteAccount(principal.userId());
+    }
+
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody User user) {
         return userService.register(user);

@@ -82,9 +82,9 @@ function truncate(text: string, max = 150) {
                 <div class="post-meta">
                   <el-tag v-if="p.boardName" size="small" type="danger" effect="light">{{ p.boardName }}</el-tag>
                   <span class="author">
-                    <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '匿').slice(0, 1) }}</el-avatar>
+                    <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '已').slice(0, 1) }}</el-avatar>
                     <el-avatar v-else :size="20" :src="p.avatarUrl" class="mini-av-img" />
-                    {{ p.authorName || '匿名' }}
+                    {{ p.authorName || '已注销' }}
                   </span>
                   <span v-if="p.createTime" class="time">{{ p.createTime }}</span>
                 </div>
@@ -192,6 +192,7 @@ function truncate(text: string, max = 150) {
 
 .post-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   font-size: 12px;

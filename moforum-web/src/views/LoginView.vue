@@ -38,71 +38,84 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="auth-wrap">
-    <div class="auth-card mf-card">
-      <h1 class="auth-title">登录</h1>
-      <p class="auth-desc">欢迎回到 MoForum</p>
-      <el-form label-position="top" @submit.prevent="onSubmit">
-        <el-form-item label="用户名 / Mo 号">
-          <el-input v-model="form.username" placeholder="输入用户名或 Mo 号" />
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="form.password" type="password" placeholder="输入密码" show-password />
-        </el-form-item>
-        <el-button type="primary" size="large" round native-type="submit" :loading="loading" style="width:100%">
-          登录
-        </el-button>
-      </el-form>
-      <div class="auth-footer">
-        还没有账号？<router-link to="/auth/register" class="auth-link">去注册</router-link>
-      </div>
+  <div class="auth-card">
+    <div class="auth-logo">Mo</div>
+    <h1 class="auth-title">登录</h1>
+    <p class="auth-desc">欢迎回到 MoForum</p>
+    <el-form label-position="top" @submit.prevent="onSubmit">
+      <el-form-item label="用户名 / Mo 号">
+        <el-input v-model="form.username" placeholder="输入用户名或 Mo 号" size="large" />
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="form.password" type="password" placeholder="输入密码" size="large" show-password />
+      </el-form-item>
+      <el-button type="primary" size="large" round native-type="submit" :loading="loading" class="auth-submit">
+        登录
+      </el-button>
+    </el-form>
+    <div class="auth-switch">
+      还没有账号？<router-link to="/auth/register" class="auth-link">去注册</router-link>
     </div>
-    <p class="auth-brand">MoForum · 方寸之间，自有天地</p>
   </div>
 </template>
 
 <style scoped>
-.auth-wrap {
-  display: flex;
-  flex-direction: column;
+.auth-card {
+  width: 100%;
+  padding: 36px 30px 30px;
+  background: var(--mf-paper);
+  border: 1px solid var(--mf-border);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(28, 25, 23, 0.08), 0 2px 8px rgba(28, 25, 23, 0.04);
+}
+
+.auth-logo {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
-  padding: 20px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #b52b2b, #c0392b);
+  color: #fff;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 20px rgba(181, 43, 43, 0.28);
 }
-.auth-card {
-  width: 380px;
-  max-width: 100%;
-  padding: 36px 28px 28px;
-}
+
 .auth-title {
   margin: 0 0 2px;
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: 0.03em;
 }
+
 .auth-desc {
   margin: 0 0 24px;
   color: var(--mf-muted);
   font-size: 14px;
 }
-.auth-footer {
+
+.auth-submit {
+  width: 100%;
+}
+
+.auth-switch {
   margin-top: 20px;
   text-align: center;
   font-size: 14px;
   color: var(--mf-muted);
 }
+
 .auth-link {
   color: var(--mf-primary);
   font-weight: 600;
 }
+
 .auth-link:hover {
   text-decoration: underline;
-}
-.auth-brand {
-  margin-top: 24px;
-  font-size: 12px;
-  color: var(--mf-muted);
-  letter-spacing: 0.06em;
 }
 </style>

@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface FriendMapper {
     int insert(Friend friend);
+    int deleteByUser(@Param("userId") Long userId);
     Friend selectByUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
     List<Friend> selectFriends(@Param("userId") Long userId);
     List<Long> selectFriendIds(@Param("userId") Long userId);

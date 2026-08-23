@@ -41,6 +41,10 @@ function doSearch() {
   }
 }
 
+function goSearchPage() {
+  router.push({ name: 'search' })
+}
+
 onMounted(() => {
   if (user.isLoggedIn) {
     notificationStore.refresh()
@@ -97,6 +101,10 @@ watch(() => user.isLoggedIn, (loggedIn) => {
             </template>
           </el-input>
         </div>
+
+        <button class="mf-search-btn" type="button" aria-label="搜索" @click="goSearchPage">
+          <el-icon><Search /></el-icon>
+        </button>
 
         <div class="mf-actions">
           <template v-if="user.isLoggedIn">
@@ -228,6 +236,26 @@ watch(() => user.isLoggedIn, (loggedIn) => {
   box-shadow: 0 0 0 3px rgba(181,43,43,0.08);
 }
 
+.mf-search-btn {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: var(--mf-bg);
+  color: var(--mf-text);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mf-search-btn:hover {
+  background: var(--mf-primary-soft);
+}
+
 .mf-actions {
   display: flex;
   align-items: center;
@@ -271,6 +299,7 @@ watch(() => user.isLoggedIn, (loggedIn) => {
 .mf-main {
   padding: 0;
   overflow: visible;
+  flex: 1;
 }
 
 .mf-dropdown-mo {
@@ -287,5 +316,56 @@ watch(() => user.isLoggedIn, (loggedIn) => {
   font-size: 13px;
   background: transparent;
   letter-spacing: 0.04em;
+}
+
+@media (max-width: 768px) {
+  .mf-header-inner {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .mf-search {
+    display: none;
+  }
+
+  .mf-search-btn {
+    display: inline-flex;
+  }
+
+  .mf-username {
+    display: none;
+  }
+
+  .mf-user-trigger {
+    padding-right: 4px;
+  }
+
+  .mf-menu :deep(.el-menu-item) {
+    padding: 0 12px !important;
+    margin: 0 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mf-logo-mark {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 1rem;
+  }
+
+  .mf-menu :deep(.el-menu-item) {
+    font-size: 13px;
+    padding: 0 8px !important;
+  }
+
+  .mf-actions {
+    gap: 6px;
+  }
+
+  .mf-actions :deep(.el-button) {
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 13px;
+  }
 }
 </style>

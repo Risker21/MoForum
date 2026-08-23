@@ -30,6 +30,14 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updatePassword">
+        UPDATE t_user SET password = #{password}, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+
     <select id="searchByKeyword" resultType="com.moforum.entity.User">
         SELECT id, username, user_no AS userNo, create_time AS createTime
         FROM t_user WHERE username LIKE #{keyword}

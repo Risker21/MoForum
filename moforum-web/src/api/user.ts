@@ -51,3 +51,11 @@ export function getUserByUserNo(userNo: number) {
 export function updateProfile(data: { bio?: string; avatarUrl?: string }) {
   return http.put<{ success: boolean; message: string }>('/user/profile', data)
 }
+
+export function changePassword(data: { oldPassword: string; newPassword: string }) {
+  return http.post<{ success: boolean; message: string }>('/user/changePassword', data)
+}
+
+export function deleteAccount() {
+  return http.post<{ success: boolean; message: string }>('/user/delete')
+}

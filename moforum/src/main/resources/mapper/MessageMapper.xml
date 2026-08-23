@@ -5,6 +5,9 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_message (from_id, to_id, content) VALUES (#{fromId}, #{toId}, #{content})
     </insert>
+    <delete id="deleteByUser">
+        DELETE FROM t_message WHERE from_id = #{userId} OR to_id = #{userId}
+    </delete>
     <select id="selectConversation" resultType="com.moforum.entity.Message">
         SELECT * FROM t_message WHERE (from_id = #{userId1} AND to_id = #{userId2})
             OR (from_id = #{userId2} AND to_id = #{userId1})

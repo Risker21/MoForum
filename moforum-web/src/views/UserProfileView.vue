@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { getUserById, updateProfile, type UserRow } from '@/api/user'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getUserById, updateProfile, changePassword, deleteAccount, type UserRow } from '@/api/user'
 import { uploadImage, confirmImage } from '@/api/upload'
 import { listPostsByUser, type PostRow } from '@/api/post'
 import { toggleFollow, getFollowCounts, getFollowStatus } from '@/api/follow'
@@ -38,6 +38,11 @@ const cropImgRef = ref<HTMLImageElement | null>(null)
 const cropSrc = ref('')
 const cropLoading = ref(false)
 let cropper: Cropper | null = null
+
+const pwdDialog = ref(false)
+const pwdForm = reactive({ oldPassword: '', newPassword: '', newPassword2: '' })
+const pwdLoading = ref(false)
+const deleteLoading = ref(false)
 
 async function loadProfile() {
   if (!Number.isFinite(userId.value) || userId.value < 1) {
@@ -264,6 +269,79 @@ async function confirmCrop() {
     cropLoading.value = false
   }
 }
+
+function openPwd() {
+  pwdForm.oldPassword = ''
+  pwdForm.newPassword = ''
+  pwdForm.newPassword2 = ''
+  pwdDialog.value = true
+}
+
+async function submitPassword() {
+  if (!pwdForm.oldPassword || !pwdForm.newPassword) {
+    ElMessage.warning('请填写原密码和新密码')
+    return
+  }
+  if (pwdForm.newPassword.length < 6) {
+    ElMessage.warning('新密码长度至少 6 位')
+    return
+  }
+  if (pwdForm.newPassword !== pwdForm.newPassword2) {
+    ElMessage.warning('两次输入的新密码不一致')
+    return
+  }
+  pwdLoading.value = true
+  try {
+    const { data } = await changePassword({ oldPassword: pwdForm.oldPassword, newPassword: pwdForm.newPassword })
+    if (data.success) {
+      ElMessage.success(data.message)
+      pwdDialog.value = false
+    } else {
+      ElMessage.error(data.message)
+    }
+  } catch (e) {
+    ElMessage.error(e instanceof Error ? e.message : '修改失败')
+  } finally {
+    pwdLoading.value = false
+  }
+}
+
+async function confirmDelete() {
+  deleteLoading.value = true
+  try {
+    const { data } = await deleteAccount()
+    if (data.success) {
+      ElMessage.success(data.message)
+      userStore.logout()
+      localStorage.removeItem('moforum_token')
+      await router.replace({ name: 'home' })
+    } else {
+      ElMessage.error(data.message)
+    }
+  } catch (e) {
+    ElMessage.error(e instanceof Error ? e.message : '注销失败')
+  } finally {
+    deleteLoading.value = false
+  }
+}
+
+async function openDelete() {
+  try {
+    await ElMessageBox.confirm(
+      '注销后账号不可恢复，你的帖子和回复将保留并匿名显示。确定注销吗？',
+      '注销账号',
+      {
+        type: 'warning',
+        confirmButtonText: '确认注销',
+        cancelButtonText: '取消',
+        confirmButtonClass: 'el-button--danger',
+      },
+    )
+  } catch {
+    return
+  }
+  await confirmDelete()
+}
 </script>
 
 <template>
@@ -304,6 +382,8 @@ async function confirmCrop() {
 
           <div v-if="isOwn" class="profile-actions">
             <el-button round @click="openEdit">编辑资料</el-button>
+            <el-button round @click="openPwd">修改密码</el-button>
+            <el-button round type="danger" plain @click="openDelete">注销账号</el-button>
           </div>
           <div v-else-if="userStore.isLoggedIn" class="profile-actions">
             <el-button
@@ -403,6 +483,24 @@ async function confirmCrop() {
       <template #footer>
         <el-button round @click="cropDialog = false">取消</el-button>
         <el-button type="primary" round :loading="cropLoading" @click="confirmCrop">确认裁剪</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="pwdDialog" title="修改密码" width="400px" top="12vh">
+      <el-form label-position="top">
+        <el-form-item label="原密码">
+          <el-input v-model="pwdForm.oldPassword" type="password" show-password placeholder="输入原密码" />
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="pwdForm.newPassword" type="password" show-password placeholder="至少 6 位" />
+        </el-form-item>
+        <el-form-item label="确认新密码">
+          <el-input v-model="pwdForm.newPassword2" type="password" show-password placeholder="再次输入新密码" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button round @click="pwdDialog = false">取消</el-button>
+        <el-button type="primary" round :loading="pwdLoading" @click="submitPassword">确认修改</el-button>
       </template>
     </el-dialog>
 </template>

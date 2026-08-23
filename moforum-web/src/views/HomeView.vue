@@ -115,9 +115,9 @@ function scrollBoards() {
           <div class="hot-side">
             <el-tag v-if="p.boardName" size="small" type="danger" effect="plain" round>{{ p.boardName }}</el-tag>
             <span class="hot-author link" @click.stop="goUser(p.userId)">
-              <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '匿').slice(0, 1) }}</el-avatar>
+              <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '已').slice(0, 1) }}</el-avatar>
               <el-avatar v-else :size="20" :src="p.avatarUrl" class="mini-av-img" />
-              {{ p.authorName || '匿名' }}
+              {{ p.authorName || '已注销' }}
             </span>
             <span class="hot-stat">{{ p.replyCount ?? 0 }} 回复</span>
             <span class="hot-stat">{{ p.viewCount ?? 0 }} 浏览</span>

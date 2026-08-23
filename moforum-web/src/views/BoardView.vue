@@ -117,9 +117,9 @@ function newPost() {
           </div>
           <div class="post-meta">
             <span class="link author" @click.stop="goUser(p.userId)">
-              <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '匿').slice(0, 1) }}</el-avatar>
+              <el-avatar v-if="!p.avatarUrl" :size="20" class="mini-av">{{ (p.authorName || '已').slice(0, 1) }}</el-avatar>
               <el-avatar v-else :size="20" :src="p.avatarUrl" class="mini-av-img" />
-              {{ p.authorName || '匿名' }}
+              {{ p.authorName || '已注销' }}
             </span>
             <span>{{ p.replyCount ?? 0 }} 回复</span>
             <span>{{ p.viewCount ?? 0 }} 浏览</span>

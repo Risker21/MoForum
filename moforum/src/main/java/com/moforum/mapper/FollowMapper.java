@@ -12,6 +12,7 @@ import java.util.List;
 public interface FollowMapper {
     int insert(Follow follow);
     int delete(@Param("followerId") Long followerId, @Param("followedId") Long followedId);
+    int deleteByUser(@Param("userId") Long userId);
     Follow selectByFollowerAndFollowed(@Param("followerId") Long followerId, @Param("followedId") Long followedId);
     List<Follow> selectFollowers(@Param("userId") Long userId);
     List<Follow> selectFollowing(@Param("userId") Long userId);

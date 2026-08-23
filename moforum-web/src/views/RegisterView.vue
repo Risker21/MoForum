@@ -53,58 +53,69 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="auth-wrap">
-    <div class="auth-card mf-card">
-      <h1 class="auth-title">创建账号</h1>
-      <p class="auth-desc">加入 MoForum，开始讨论</p>
-      <el-form label-position="top" @submit.prevent="onSubmit">
-        <el-form-item label="用户名">
-          <el-input v-model="form.username" placeholder="请输入用户名" clearable autocomplete="username" />
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="请输入密码"
-            show-password
-            autocomplete="new-password"
-          />
-        </el-form-item>
-        <el-form-item label="确认密码">
-          <el-input
-            v-model="form.password2"
-            type="password"
-            placeholder="请再次输入密码"
-            show-password
-            autocomplete="new-password"
-          />
-        </el-form-item>
-        <el-button type="primary" size="large" round :loading="loading" native-type="submit" style="width:100%">
-          注册
-        </el-button>
-      </el-form>
-      <div class="auth-footer">
-        已有账号？<router-link to="/auth/login" class="auth-link">去登录</router-link>
-      </div>
+  <div class="auth-card">
+    <div class="auth-logo">Mo</div>
+    <h1 class="auth-title">创建账号</h1>
+    <p class="auth-desc">加入 MoForum，开始讨论</p>
+    <el-form label-position="top" @submit.prevent="onSubmit">
+      <el-form-item label="用户名">
+        <el-input v-model="form.username" placeholder="请输入用户名" size="large" clearable autocomplete="username" />
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input
+          v-model="form.password"
+          type="password"
+          placeholder="请输入密码"
+          size="large"
+          show-password
+          autocomplete="new-password"
+        />
+      </el-form-item>
+      <el-form-item label="确认密码">
+        <el-input
+          v-model="form.password2"
+          type="password"
+          placeholder="请再次输入密码"
+          size="large"
+          show-password
+          autocomplete="new-password"
+        />
+      </el-form-item>
+      <el-button type="primary" size="large" round :loading="loading" native-type="submit" class="auth-submit">
+        注册
+      </el-button>
+    </el-form>
+    <div class="auth-switch">
+      已有账号？<router-link to="/auth/login" class="auth-link">去登录</router-link>
     </div>
-    <p class="auth-brand">MoForum · 方寸之间，自有天地</p>
   </div>
 </template>
 
 <style scoped>
-.auth-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: 20px;
+.auth-card {
+  width: 100%;
+  padding: 36px 30px 30px;
+  background: var(--mf-paper);
+  border: 1px solid var(--mf-border);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(28, 25, 23, 0.08), 0 2px 8px rgba(28, 25, 23, 0.04);
 }
 
-.auth-card {
-  width: 380px;
-  max-width: 100%;
-  padding: 36px 28px 28px;
+.auth-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #b52b2b, #c0392b);
+  color: #fff;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 20px rgba(181, 43, 43, 0.28);
 }
 
 .auth-title {
@@ -120,7 +131,11 @@ async function onSubmit() {
   font-size: 14px;
 }
 
-.auth-footer {
+.auth-submit {
+  width: 100%;
+}
+
+.auth-switch {
   margin-top: 20px;
   text-align: center;
   font-size: 14px;
@@ -131,14 +146,8 @@ async function onSubmit() {
   color: var(--mf-primary);
   font-weight: 600;
 }
+
 .auth-link:hover {
   text-decoration: underline;
-}
-
-.auth-brand {
-  margin-top: 24px;
-  font-size: 12px;
-  color: var(--mf-muted);
-  letter-spacing: 0.06em;
 }
 </style>

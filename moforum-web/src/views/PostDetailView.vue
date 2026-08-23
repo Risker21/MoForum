@@ -133,10 +133,10 @@ async function removePost() {
         <div class="mf-card floor main-floor">
           <div class="floor-tag">#1 楼主</div>
           <div class="floor-head">
-            <el-avatar v-if="!post.avatarUrl" class="av">{{ post.authorName?.slice(0, 1) || '匿' }}</el-avatar>
+            <el-avatar v-if="!post.avatarUrl" class="av">{{ post.authorName?.slice(0, 1) || '已' }}</el-avatar>
             <el-avatar v-else class="av" :src="post.avatarUrl" />
             <div>
-              <div class="name link" @click.stop="goUser(post.userId)">{{ post.authorName || '匿名用户' }}</div>
+              <div class="name link" @click.stop="goUser(post.userId)">{{ post.authorName || '已注销用户' }}</div>
               <div class="time">{{ post.createTime }}</div>
             </div>
             <div class="stats">
@@ -169,10 +169,10 @@ async function removePost() {
         >
           <div class="floor-tag">#{{ idx + 2 }}</div>
           <div class="floor-head">
-            <el-avatar v-if="!r.avatarUrl" class="av sm">{{ r.authorName?.slice(0, 1) || '匿' }}</el-avatar>
+            <el-avatar v-if="!r.avatarUrl" class="av sm">{{ r.authorName?.slice(0, 1) || '已' }}</el-avatar>
             <el-avatar v-else class="av sm" :src="r.avatarUrl" />
             <div>
-              <div class="name link" @click.stop="goUser(r.userId)">{{ r.authorName || '匿名' }}</div>
+              <div class="name link" @click.stop="goUser(r.userId)">{{ r.authorName || '已注销' }}</div>
               <div class="time">{{ r.createTime }}</div>
             </div>
           </div>
@@ -236,6 +236,7 @@ async function removePost() {
 
 .floor-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   margin-bottom: 14px;

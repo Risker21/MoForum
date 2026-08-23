@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface MessageMapper {
     int insert(Message message);
+    int deleteByUser(@Param("userId") Long userId);
     List<Message> selectConversation(@Param("userId1") Long userId1, @Param("userId2") Long userId2,
                                      @Param("offset") int offset, @Param("limit") int limit);
     int countConversation(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
