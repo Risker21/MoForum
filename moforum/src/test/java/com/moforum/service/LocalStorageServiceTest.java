@@ -75,4 +75,32 @@ class LocalStorageServiceTest {
 
         assertTrue(Files.exists(sensitive));
     }
+
+    @Test
+    void uploadRejectsDisallowedExtension() {
+        LocalStorageService service = service();
+
+        MockMultipartFile html = new MockMultipartFile(
+                "file", "payload.html", "image/png", "fake".getBytes());
+        assertThrows(IllegalArgumentException.class, () -> service.upload(html));
+
+        MockMultipartFile svg = new MockMultipartFile(
+                "file", "x.svg", "image/svg+xml", "fake".getBytes());
+        assertThrows(IllegalArgumentException.class, () -> service.upload(svg));
+
+        MockMultipartFile noext = new MockMultipartFile(
+                "file", "noext", "image/png", "fake".getBytes());
+        assertThrows(IllegalArgumentException.class, () -> service.upload(noext));
+    }
+
+    @Test
+    void uploadAcceptsUppercaseExtension() throws Exception {
+        LocalStorageService service = service();
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "photo.PNG", "image/png", "fake-image-bytes".getBytes());
+
+        String url = service.upload(file);
+
+        assertTrue(url.endsWith(".png"));
+    }
 }

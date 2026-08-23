@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class LocalStorageService {
 
     private static final String PUBLIC_PREFIX = "/uploads/";
+
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp");
 
     private final String rootPath;
 
@@ -25,7 +28,10 @@ public class LocalStorageService {
         String ext = "";
         String name = file.getOriginalFilename();
         if (name != null && name.contains(".")) {
-            ext = name.substring(name.lastIndexOf("."));
+            ext = name.substring(name.lastIndexOf(".")).toLowerCase();
+        }
+        if (!ALLOWED_EXTENSIONS.contains(ext)) {
+            throw new IllegalArgumentException("不支持的图片格式: " + (ext.isEmpty() ? "(无扩展名)" : ext));
         }
         String key = UUID.randomUUID().toString().replace("-", "") + ext;
         try {
