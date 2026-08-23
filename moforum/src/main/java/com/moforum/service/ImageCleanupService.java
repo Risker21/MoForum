@@ -11,19 +11,16 @@ import java.util.Set;
 @EnableScheduling
 public class ImageCleanupService {
 
-    private final OssService ossService;
+    private final LocalStorageService storageService;
     private final StringRedisTemplate redis;
 
-    public ImageCleanupService(OssService ossService, StringRedisTemplate redis) {
-        this.ossService = ossService;
+    public ImageCleanupService(LocalStorageService storageService, StringRedisTemplate redis) {
+        this.storageService = storageService;
         this.redis = redis;
     }
 
     @Scheduled(fixedRate = 600_000)
     public void cleanupOrphanedImages() {
-        if (!ossService.isEnabled()) {
-            return;
-        }
         Set<String> pending = redis.opsForSet().members("img:pending");
         if (pending == null || pending.isEmpty()) {
             return;
@@ -37,7 +34,7 @@ public class ImageCleanupService {
             }
             try {
                 if (Long.parseLong(ts) < cutoff && (confirmed == null || !confirmed.contains(key))) {
-                    ossService.deleteByKey(key);
+                    storageService.deleteByKey(key);
                     redis.opsForSet().remove("img:pending", key);
                     redis.opsForHash().delete("img:pending:meta", key);
                 }
