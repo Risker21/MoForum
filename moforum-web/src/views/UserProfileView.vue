@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getUserById, updateProfile, type UserRow } from '@/api/user'
@@ -8,6 +8,8 @@ import { listPostsByUser, type PostRow } from '@/api/post'
 import { toggleFollow, getFollowCounts, getFollowStatus } from '@/api/follow'
 import { sendFriendRequest, getFriendStatus } from '@/api/friend'
 import { useUserStore } from '@/stores/user'
+import Cropper from 'cropperjs'
+import 'cropperjs/dist/cropper.css'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,6 +33,11 @@ const editDialog = ref(false)
 const editBio = ref('')
 const editAvatar = ref('')
 const editLoading = ref(false)
+const cropDialog = ref(false)
+const cropImgRef = ref<HTMLImageElement | null>(null)
+const cropSrc = ref('')
+const cropLoading = ref(false)
+let cropper: Cropper | null = null
 
 async function loadProfile() {
   if (!Number.isFinite(userId.value) || userId.value < 1) {
@@ -196,7 +203,7 @@ async function saveProfile() {
   }
 }
 
-async function onAvatarUpload(file: File) {
+function onAvatarUpload(file: File) {
   if (file.size > 3 * 1024 * 1024) {
     ElMessage.warning('图片不能超过 3MB')
     return
@@ -205,19 +212,56 @@ async function onAvatarUpload(file: File) {
     ElMessage.warning('仅支持图片格式')
     return
   }
-  const d = new FormData()
-  d.append('file', file)
+  cropSrc.value = URL.createObjectURL(file)
+  cropDialog.value = true
+}
+
+function initCropper() {
+  nextTick(() => {
+    const img = cropImgRef.value
+    if (!img) return
+    cropper?.destroy()
+    cropper = new Cropper(img, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 1,
+    })
+  })
+}
+
+function closeCrop() {
+  cropper?.destroy()
+  cropper = null
+  if (cropSrc.value) {
+    URL.revokeObjectURL(cropSrc.value)
+    cropSrc.value = ''
+  }
+}
+
+async function confirmCrop() {
+  if (!cropper) return
+  cropLoading.value = true
   try {
+    const canvas = cropper.getCroppedCanvas({ width: 400, height: 400, fillColor: '#fff' })
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9))
+    if (!blob) {
+      ElMessage.error('裁剪失败，请重试')
+      return
+    }
+    const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' })
     const { data: uploadRes } = await uploadImage(file)
     if (uploadRes.success && uploadRes.url) {
       editAvatar.value = uploadRes.url
       confirmImage(uploadRes.url)
       ElMessage.success('头像已上传')
+      cropDialog.value = false
     } else {
       ElMessage.error(uploadRes.message || '上传失败')
     }
   } catch (e) {
     ElMessage.error(e instanceof Error ? e.message : '上传失败')
+  } finally {
+    cropLoading.value = false
   }
 }
 </script>
@@ -343,6 +387,24 @@ async function onAvatarUpload(file: File) {
       <el-button type="primary" round :loading="editLoading" @click="saveProfile">保存</el-button>
     </template>
   </el-dialog>
+
+    <el-dialog
+      v-model="cropDialog"
+      title="裁剪头像"
+      width="520px"
+      top="8vh"
+      :close-on-click-modal="false"
+      @opened="initCropper"
+      @closed="closeCrop"
+    >
+      <div class="crop-box">
+        <img ref="cropImgRef" :src="cropSrc" alt="裁剪预览" />
+      </div>
+      <template #footer>
+        <el-button round @click="cropDialog = false">取消</el-button>
+        <el-button type="primary" round :loading="cropLoading" @click="confirmCrop">确认裁剪</el-button>
+      </template>
+    </el-dialog>
 </template>
 
 <style scoped>
@@ -515,5 +577,16 @@ async function onAvatarUpload(file: File) {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.crop-box {
+  height: 380px;
+  background: #2b2b2b;
+}
+
+.crop-box img {
+  display: block;
+  max-width: 100%;
+  max-height: 380px;
 }
 </style>
