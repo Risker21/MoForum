@@ -16,9 +16,5 @@ spring.data.redis.password=your_redis_password
 jwt.secret=your_jwt_secret_key_at_least_32_characters
 jwt.expiration=86400000
 
-# 阿里云 OSS 配置
-oss.endpoint=oss-cn-beijing.aliyuncs.com
-oss.access-key=your_oss_access_key
-oss.secret-key=your_oss_secret_key
-oss.bucket=your_bucket_name
-oss.max-size=3145728
+# 本地图片存储路径（容器内，对应 docker-compose 挂载的 ./uploads）
+storage.local.path=/app/uploads

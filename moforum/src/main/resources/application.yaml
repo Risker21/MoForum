@@ -30,9 +30,6 @@ jwt:
   secret: ${JWT_SECRET:}
   expiration: 86400000
 
-oss:
-  endpoint: ${OSS_ENDPOINT:}
-  access-key: ${OSS_ACCESS_KEY:}
-  secret-key: ${OSS_SECRET_KEY:}
-  bucket: ${OSS_BUCKET:}
-  max-size: 3145728
+storage:
+  local:
+    path: uploads
