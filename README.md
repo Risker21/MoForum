@@ -27,7 +27,6 @@
 | Redis | 7.0+ |
 | JWT (jjwt) | 0.12.6 |
 | Maven | 3.9+ |
-| 阿里云 OSS | — |
 
 ### 前端 (`moforum-web/`)
 
@@ -82,16 +81,12 @@ mvn spring-boot:run
 cp moforum/.env.example moforum/.env
 ```
 
-编辑 `moforum/.env`，填入你的数据库密码和 OSS 密钥（参考下方示例）。
+编辑 `moforum/.env`，填入你的数据库密码（参考下方示例）。
 
 `.env` 文件内容示例：
 ```bash
 DB_PASSWORD=your_mysql_password
 JWT_SECRET=your_random_jwt_secret_string
-OSS_ENDPOINT=oss-cn-beijing.aliyuncs.com
-OSS_ACCESS_KEY=your_oss_access_key
-OSS_SECRET_KEY=your_oss_secret_key
-OSS_BUCKET=moforum
 ```
 
 > `.env` 文件已加入 `.gitignore`，不会提交到 GitHub。也支持通过同名系统环境变量覆盖（优先级更高）。
@@ -130,13 +125,13 @@ MoForum/
 ├── moforum/                          # 后端 (Spring Boot + MyBatis)
 │   ├── sql/                          # 数据库初始化脚本
 │   ├── src/main/java/com/moforum/
-│   │   ├── config/                   # 配置：Security / JWT / WebSocket / Redis / OSS
+│   │   ├── config/                   # 配置：Security / JWT / WebSocket / Redis
 │   │   ├── controller/               # 控制器层 (7 个)
 │   │   ├── service/                  # 服务层
 │   │   ├── mapper/                   # MyBatis Mapper 接口
 │   │   └── entity/                   # 实体类
 │   └── src/main/resources/
-│       ├── application.yaml          # 主配置（含 OSS、MySQL、Redis 默认值）
+│       ├── application.yaml          # 主配置（含 MySQL、Redis 默认值）
 │       └── mapper/                   # MyBatis XML 映射
 │
 └── moforum-web/                      # 前端 (Vue 3 + Element Plus)
@@ -200,7 +195,7 @@ MoForum/
 | GET | `/user/getById` | ❌ | 根据 ID 查询用户 |
 | GET | `/user/getByUserNo` | ❌ | 根据 Mo 号查询用户 |
 | POST | `/user/updateProfile` | ✅ | 更新个人资料（昵称、头像、简介） |
-| POST | `/user/uploadAvatar` | ✅ | 上传头像（OSS） |
+| POST | `/user/uploadAvatar` | ✅ | 上传头像（本地存储） |
 | GET | `/user/profile` | ✅ | 获取个人完整资料 |
 
 ### 板块 & 帖子 & 回复
@@ -262,7 +257,7 @@ MoForum/
 - **BCrypt 加密** — 密码不存明文，Spring Security `matches()` 比对
 - **贴吧模式** — 按主题分区，每区独立计数，支持发帖盖楼
 - **实时私信** — STOMP over SockJS WebSocket，聊天页面支持 Enter 发送 / Shift+Enter 换行 / 图片上传 / 表情选择
-- **OSS 图片上传** — 阿里云 OSS 存储，支持 3MB 以内图片，前端 Markdown 自动插入
+- **本地图片存储** — 服务器本地磁盘存储（nginx 直出），支持 3MB 以内图片，前端 Markdown 自动插入
 - **自定义头像** — 用户在个人主页上传头像，导航栏即时同步更新
 - **搜索系统** — 帖子/板块/用户多类型模糊搜索
 - **关注 & 好友系统** — 单向关注 + 双向好友（申请/同意/拒绝全流程）
